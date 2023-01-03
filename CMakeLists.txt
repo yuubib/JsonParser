@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+project(JsonParser)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}-${CMAKE_HOST_SYSTEM_NAME}/${PROJECT_NAME}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}-${CMAKE_HOST_SYSTEM_NAME}/${PROJECT_NAME}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}-${CMAKE_HOST_SYSTEM_NAME}/${PROJECT_NAME}/lib)
+
+add_library(Json Json.cpp Json.h JsonValue.h parser.h)
+target_include_directories(Json PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_executable(test main.cpp)
+target_include_directories(test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(test Json)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT test)

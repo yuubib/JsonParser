@@ -2,7 +2,8 @@
 
 #include "Json.h"
 #include <string>
-#include<sstream>
+#include <sstream>
+#include <cmath>
 class JsonValue 
 {
 public:

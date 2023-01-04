@@ -3,7 +3,6 @@
 #include "parser.h"
 #include <memory>
 #include <stack>
-
 Json::Json() :m_ptr(std::make_shared<JsonNull>()) {}
 Json::Json(double value) :m_ptr(std::make_shared<JsonDouble>(value)) {}
 Json::Json(int value) :m_ptr(std::make_shared<JsonInt>(value)) {}
@@ -42,16 +41,17 @@ Json Json::parse(const std::string& in)
     return result;
 }
 
-void Json::dump(std::string& out) const
+void Json::dump(std::string& out,int depth) const
 {
-    m_ptr->dump(out);
+    m_ptr->dump(out, depth);
 }
-std::string Json::dump() const
+std::string Json::dump(int depth) const
 {
     std::string out;
-    dump(out);
+    dump(out,depth);
     return out;
 }
+/*
 std::string Json::pretty_print() const
 {
     std::string in = dump();
@@ -95,8 +95,17 @@ std::string Json::pretty_print() const
             out.push_back(in[i]);
             stk.pop();
         }
-        else
+        else if (in[i] == '"')
+        {
             out.push_back(in[i]);
+            i++;
+            while (!(in[i]=='"' and in[i-1]!='\''))
+            {
+                i++;
+                out.push_back(in[i]);
+            }
+        }
     }
     return out;
 }
+*/

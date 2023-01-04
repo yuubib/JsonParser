@@ -52,9 +52,9 @@ public:
     const Json& operator[](const std::string& key) const;
 
     static Json parse(const std::string& in);
-    void dump(std::string& out) const;
-    std::string dump() const;
-    std::string pretty_print() const;
+    void dump(std::string& out,int depth = -1) const;
+    std::string dump(int depth = -1) const;
+   // std::string pretty_print() const;
 
 };
 inline bool in_range(long x, long lower, long upper)

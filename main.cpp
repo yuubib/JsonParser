@@ -6,12 +6,11 @@
 int main()
 {
     /*
-    std::ifstream f(R"(C:\Users\Administrator\Desktop\citm_catalog.json)");
+    std::ifstream f(R"(C:\Users\Administrator\Desktop\twitter.json)");
     std::stringstream ss;
     ss << f.rdbuf();
-
-    auto str = ss.str();
     */
+   // auto str = ss.str();
 
     auto str = R"({"id": "0001", "type": "donut","name": "Cake","ppu": 0.55, "batters":{"batter":[{ "id": "1001", "type": "Regular" },{ "id": "1002", "type": "Chocolate" }]},"topping":[{ "id": "5001", "type": "None" },{ "id": "5002", "type": "Glazed" }]})";
     Json res = Json::parse(str);

@@ -126,15 +126,39 @@ public:
     virtual const std::string& string_value()const override { return m_value; };
     virtual void dump(std::string& out, int depth) const override
     {
-        std::stringstream ss;
-        ss << "\"" << m_value << "\"";
-        if (depth <= -1)
-            out += ss.str();
-        else
+        if (depth >= 0)
         {
             out.append(depth * 4, ' ');
-            out += ss.str();
         }
+        out += '\"';
+        for (size_t i = 0; i < m_value.length(); i++)
+        {
+            const char ch = m_value[i];
+            if (ch == '\\') {
+                out += "\\\\";
+            }
+            else if (ch == '"') {
+                out += "\\\"";
+            }
+            else if (ch == '\b') {
+                out += "\\b";
+            }
+            else if (ch == '\f') {
+                out += "\\f";
+            }
+            else if (ch == '\n') {
+                out += "\\n";
+            }
+            else if (ch == '\r') {
+                out += "\\r";
+            }
+            else if (ch == '\t') {
+                out += "\\t";
+            }
+            else
+                out += ch;
+        }
+        out += '\"';
     }
 };
 
@@ -212,10 +236,9 @@ public:
             {
                 if (!first)
                     out += ",\n";
-                out.append((depth + 1) * 4, ' ');
-                out += "\"";
-                out += kv.first;
-                out += "\"";
+
+                Json(kv.first).dump(out, depth + 1);
+
                 out += ": ";
 
                 if (kv.second.type() != Json::ARRAY and kv.second.type() != Json::OBJECT)

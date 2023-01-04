@@ -4,29 +4,12 @@
 
 int main()
 {
-    auto str = R"(
-    {
-      "name": "ZYB",
-      "university": "º¼µç",
-      "age": 22,
-      "isMale": true,
-      "PI":3.14,
-      "Array":[1,true,"12\"34\t56"]
-    }
-  )";
+    
+    auto str = R"({"id": "0001", "type": "donut","name": "Cake","ppu": 0.55, "batters":{"batter":[{ "id": "1001", "type": "Regular" },{ "id": "1002", "type": "Chocolate" }]},"topping":[{ "id": "5001", "type": "None" },{ "id": "5002", "type": "Glazed" }]})";
     Json res = Json::parse(str);
+    std::cout << "pertty_print:" << std::endl;
+    std::cout << res.pretty_print() << std::endl;
+    std::cout << "normal:" << std::endl;
     std::cout << res.dump() << std::endl;
-    std::unordered_map<int, std::string> type{
-        {Json::NUL,"NULL"},
-        {Json::NUMBER,"NUMBER"},
-        {Json::BOOL,"BOOL"},
-        {Json::STRING,"STRING"},
-        {Json::ARRAY,"ARRAY"},
-        {Json::OBJECT,"OBJECT"}
-    };
-    for (auto i : res.object_items())
-    {
-        std::cout << i.first.c_str() << ":" << type[i.second.type()] << std::endl;
-    }
     return 0;
 }

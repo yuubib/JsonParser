@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Json.h"
-#include "JsonValue.h"
+#include "jsonValue.h"
 #include <stdexcept>
 #include <assert.h>
 class JsonParser

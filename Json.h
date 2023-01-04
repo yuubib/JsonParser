@@ -54,6 +54,7 @@ public:
     static Json parse(const std::string& in);
     void dump(std::string& out) const;
     std::string dump() const;
+    std::string pretty_print() const;
 
 };
 inline bool in_range(long x, long lower, long upper)

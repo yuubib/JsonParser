@@ -1,7 +1,8 @@
 #include "Json.h"
-#include "JsonValue.h"
+#include "jsonValue.h"
 #include "parser.h"
 #include <memory>
+#include <stack>
 
 Json::Json() :m_ptr(std::make_shared<JsonNull>()) {}
 Json::Json(double value) :m_ptr(std::make_shared<JsonDouble>(value)) {}
@@ -51,4 +52,51 @@ std::string Json::dump() const
     dump(out);
     return out;
 }
-
+std::string Json::pretty_print() const
+{
+    std::string in = dump();
+    struct outchar
+    {
+        char value;
+        int depth;
+    };
+    std::stack<outchar> stk;
+    std::string out;
+    for (int i = 0; i < in.size(); i++)
+    {
+        if (in[i] == '{' or in[i] == '[')
+        {
+            if (stk.empty())
+            {
+                stk.push({ in[i],0 });
+            }
+            else
+                stk.push({ in[i],stk.top().depth + 1 });
+            if (!(i - 1 < 0 or in[i - 1] == ',' or in[i - 1] == '{' or in[i - 1] == '['))
+            {
+                out.push_back('\n');
+                out.append(stk.top().depth * 4, ' ');
+            }
+            out.push_back(in[i]);
+            out.push_back('\n');
+            out.append((stk.top().depth + 1) * 4, ' ');
+        }
+        else if (in[i] == ',')
+        {
+            out.push_back(',');
+            out.push_back('\n');
+            out.append((stk.top().depth + 1) * 4, ' ');
+            
+        }
+        else if (in[i] == '}' or in[i] == ']')
+        {
+            out.push_back('\n');
+            out.append(stk.top().depth * 4, ' ');
+            out.push_back(in[i]);
+            stk.pop();
+        }
+        else
+            out.push_back(in[i]);
+    }
+    return out;
+}

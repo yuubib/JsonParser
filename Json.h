@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <string>
 #include <memory>
-
+#include <cmath>
 class JsonValue;
 class Json
 {

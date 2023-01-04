@@ -2,8 +2,7 @@
 
 #include "Json.h"
 #include <string>
-#include <sstream>
-#include <cmath>
+#include<sstream>
 class JsonValue 
 {
 public:
@@ -74,7 +73,7 @@ public:
     JsonBoolean(bool& value) :m_value(value) { tag = Json::BOOL; }
     virtual void dump(std::string& out) const override
     {
-        out += m_value ? "ture" : "false";
+        out += m_value ? "true" : "false";
     }
     virtual bool bool_value() const override { return m_value; }
 };
@@ -105,7 +104,7 @@ public:
         for (const auto& value : m_value)
         {
             if (!first)
-                out += ", ";
+                out += ",";
             value.dump(out);
             first = false;
         }
@@ -127,8 +126,10 @@ public:
         for (const auto& kv : m_value)
         {
             if (!first)
-                out += ", ";
+                out += ",";
+            out += "\"";
             out += kv.first;
+            out += "\"";
             out += ": ";
             kv.second.dump(out);
             first = false;

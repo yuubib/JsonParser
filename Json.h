@@ -23,7 +23,7 @@ public:
 
     Json();
     Json(double value);             // NUMBER
-    Json(int value);                // NUMBER
+    Json(long long value);                // NUMBER
     Json(bool value);               // BOOL
     Json(const std::string& value); // STRING   
     Json(const char* value);       // STRING
@@ -39,7 +39,7 @@ public:
     bool is_object() const { return type() == OBJECT; }
 
     double number_value() const;
-    int int_value() const;
+    long long int_value() const;
     bool bool_value() const;
     const std::string& string_value() const;
 
@@ -57,7 +57,7 @@ public:
    // std::string pretty_print() const;
 
 };
-inline bool in_range(long x, long lower, long upper)
+inline bool in_range(long long x, long long lower, long long upper)
 {
     return (x >= lower && x <= upper);
 }

@@ -12,7 +12,7 @@ public:
     virtual void dump(std::string& out,int depth = -1) const = 0;
 
     virtual double number_value() const { return 0; };
-    virtual int int_value() const { return 0; };
+    virtual long long int_value() const { return 0; };
     virtual bool bool_value() const { return false; };
     virtual const std::string& string_value() const { return ""; };
     virtual const Json::array& array_items() const { return Json::array(); };
@@ -74,19 +74,19 @@ public:
     }
 
     virtual double number_value() const override { return m_value; }
-    virtual int int_value() const override { return static_cast<int>(m_value); }
+    virtual long long int_value() const override { return static_cast<int>(m_value); }
 };
 
 class JsonInt :public JsonValue
 {
 public:
-    int m_value;
-    JsonInt(int& value) :m_value(value) { tag = Json::NUMBER; }
+    long long m_value;
+    JsonInt(long long& value) :m_value(value) { tag = Json::NUMBER; }
 
     virtual void dump(std::string& out, int depth) const override
     {
         char buf[32];
-        snprintf(buf, sizeof buf, "%d", m_value);
+        snprintf(buf, sizeof buf, "%ld", m_value);
         if (depth <= -1)
             out += buf;
         else
@@ -97,7 +97,7 @@ public:
     }
 
     virtual double number_value() const override { return m_value; }
-    virtual int int_value() const override { return m_value; }
+    virtual long long int_value() const override { return m_value; }
 };
 
 class JsonBoolean :public JsonValue

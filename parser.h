@@ -44,7 +44,7 @@ public:
 			i++;
 
 		if (str[i] != '.' and str[i] != 'e' and str[i] != 'E')
-			return std::atoi(str.c_str() + start_pos);
+			return std::atoll(str.c_str() + start_pos);
 
 		if (str[i] == '.')
 		{
@@ -70,7 +70,7 @@ public:
 		while (true)
 		{
 
-			encode_utf8(last_escaped_codepoint, out);
+			
 
 			if (i == str.size())
 			{
@@ -80,11 +80,15 @@ public:
 			char ch = str[i++];
 
 			if (ch == '"')
+			{
+				encode_utf8(last_escaped_codepoint, out);
 				return out;
+			}
 			if (ch != '\\')
 			{
-				out += ch;
+				encode_utf8(last_escaped_codepoint, out);
 				last_escaped_codepoint = -1;
+				out += ch;
 				continue;
 			}
 			if (i == str.size())
@@ -135,6 +139,7 @@ public:
 				i += 4;
 				continue;
 			}
+			encode_utf8(last_escaped_codepoint, out);
 			last_escaped_codepoint = -1;
 			if (ch == 'b') {
 				out += '\b';

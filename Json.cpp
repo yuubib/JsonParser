@@ -5,7 +5,7 @@
 #include <stack>
 Json::Json() :m_ptr(std::make_shared<JsonNull>()) {}
 Json::Json(double value) :m_ptr(std::make_shared<JsonDouble>(value)) {}
-Json::Json(int value) :m_ptr(std::make_shared<JsonInt>(value)) {}
+Json::Json(long long value) :m_ptr(std::make_shared<JsonInt>(value)) {}
 Json::Json(bool value) :m_ptr(std::make_shared<JsonBoolean>(value)) {}
 Json::Json(const std::string& value) : m_ptr(std::make_shared<JsonString>(value)) {}
 Json::Json(const char* value) : m_ptr(std::make_shared<JsonString>(value)) {}
@@ -14,7 +14,7 @@ Json::Json(const Json::object& values) : m_ptr(std::make_shared<JsonObject>(valu
 
 Json::Type Json::type()                           const { return m_ptr->type(); }
 double Json::number_value()                       const { return m_ptr->number_value(); }
-int Json::int_value()                             const { return m_ptr->int_value(); }
+long long Json::int_value()                             const { return m_ptr->int_value(); }
 bool Json::bool_value()                           const { return m_ptr->bool_value(); }
 const std::string& Json::string_value()               const { return m_ptr->string_value(); }
 const std::vector<Json>& Json::array_items()          const { return m_ptr->array_items(); }

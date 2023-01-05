@@ -61,3 +61,26 @@ inline bool in_range(long x, long lower, long upper)
 {
     return (x >= lower && x <= upper);
 }
+inline void encode_utf8(long pt, std::string& out) {
+    if (pt < 0)
+        return;
+
+    if (pt < 0x80) {
+        out += static_cast<char>(pt);
+    }
+    else if (pt < 0x800) {
+        out += static_cast<char>((pt >> 6) | 0xC0);
+        out += static_cast<char>((pt & 0x3F) | 0x80);
+    }
+    else if (pt < 0x10000) {
+        out += static_cast<char>((pt >> 12) | 0xE0);
+        out += static_cast<char>(((pt >> 6) & 0x3F) | 0x80);
+        out += static_cast<char>((pt & 0x3F) | 0x80);
+    }
+    else {
+        out += static_cast<char>((pt >> 18) | 0xF0);
+        out += static_cast<char>(((pt >> 12) & 0x3F) | 0x80);
+        out += static_cast<char>(((pt >> 6) & 0x3F) | 0x80);
+        out += static_cast<char>((pt & 0x3F) | 0x80);
+    }
+}

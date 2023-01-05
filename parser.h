@@ -66,8 +66,12 @@ public:
 	std::string parse_string()
 	{
 		std::string out;
+		long last_escaped_codepoint = -1;
 		while (true)
 		{
+
+			encode_utf8(last_escaped_codepoint, out);
+
 			if (i == str.size())
 			{
 				fail("unexpected end of input in string");
@@ -80,6 +84,7 @@ public:
 			if (ch != '\\')
 			{
 				out += ch;
+				last_escaped_codepoint = -1;
 				continue;
 			}
 			if (i == str.size())
@@ -88,6 +93,49 @@ public:
 				return "";
 			}
 			ch = str[i++];
+
+			if (ch == 'u') {
+				// Extract 4-byte escape sequence
+				std::string esc = str.substr(i, 4);
+				// Explicitly check length of the substring. The following loop
+				// relies on std::string returning the terminating NUL when
+				// accessing str[length]. Checking here reduces brittleness.
+				if (esc.length() < 4) {
+					fail("bad \\u escape: " + esc);
+					return "";
+				}
+				for (size_t j = 0; j < 4; j++) {
+					if (!in_range(esc[j], 'a', 'f') && !in_range(esc[j], 'A', 'F')
+						&& !in_range(esc[j], '0', '9'))
+					{
+						fail("bad \\u escape: " + esc);
+						return "";
+					}
+				}
+
+				long codepoint = strtol(esc.data(), nullptr, 16);
+
+				// JSON specifies that characters outside the BMP shall be encoded as a pair
+				// of 4-hex-digit \u escapes encoding their surrogate pair components. Check
+				// whether we're in the middle of such a beast: the previous codepoint was an
+				// escaped lead (high) surrogate, and this is a trail (low) surrogate.
+				if (in_range(last_escaped_codepoint, 0xD800, 0xDBFF)
+					&& in_range(codepoint, 0xDC00, 0xDFFF)) {
+					// Reassemble the two surrogate pairs into one astral-plane character, per
+					// the UTF-16 algorithm.
+					encode_utf8((((last_escaped_codepoint - 0xD800) << 10)
+						| (codepoint - 0xDC00)) + 0x10000, out);
+					last_escaped_codepoint = -1;
+				}
+				else {
+					encode_utf8(last_escaped_codepoint, out);
+					last_escaped_codepoint = codepoint;
+				}
+
+				i += 4;
+				continue;
+			}
+			last_escaped_codepoint = -1;
 			if (ch == 'b') {
 				out += '\b';
 			}
@@ -105,6 +153,11 @@ public:
 			}
 			else if (ch == '"' || ch == '\\' || ch == '/') {
 				out += ch;
+			}
+			else
+			{
+				fail("invalid escape character ");
+				return "";
 			}
 		}
 	}

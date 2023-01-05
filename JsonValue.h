@@ -155,8 +155,24 @@ public:
             else if (ch == '\t') {
                 out += "\\t";
             }
-            else
+            else if (static_cast<uint8_t>(ch) <= 0x1f) {
+                char buf[8];
+                snprintf(buf, sizeof buf, "\\u%04x", ch);
+                out += buf;
+            }
+            else if (static_cast<uint8_t>(ch) == 0xe2 && static_cast<uint8_t>(m_value[i + 1]) == 0x80
+                && static_cast<uint8_t>(m_value[i + 2]) == 0xa8) {
+                out += "\\u2028";
+                i += 2;
+            }
+            else if (static_cast<uint8_t>(ch) == 0xe2 && static_cast<uint8_t>(m_value[i + 1]) == 0x80
+                && static_cast<uint8_t>(m_value[i + 2]) == 0xa9) {
+                out += "\\u2029";
+                i += 2;
+            }
+            else {
                 out += ch;
+            }
         }
         out += '\"';
     }
@@ -218,9 +234,7 @@ public:
             {
                 if (!first)
                     out += ",";
-                out += "\"";
-                out += kv.first;
-                out += "\"";
+                Json(kv.first).dump(out);
                 out += ": ";
                 kv.second.dump(out);
                 first = false;
@@ -238,7 +252,8 @@ public:
                     out += ",\n";
 
                 Json(kv.first).dump(out, depth + 1);
-
+                //if (kv.first == "slash")
+                 //   int x = 1;
                 out += ": ";
 
                 if (kv.second.type() != Json::ARRAY and kv.second.type() != Json::OBJECT)
